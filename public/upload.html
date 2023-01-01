@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x"
+      crossorigin="anonymous"
+    />
+    <link href="main.css" rel="stylesheet" />
+    <script
+      src="https://kit.fontawesome.com/39430973ac.js"
+      crossorigin="anonymous"
+    ></script>
+    <title>Document</title>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" style="color: green" href="/">
+          <img src="broccoli.png" alt="Bootstrap" width="30" height="24" />
+          브로콜리마켓</a
+        >
+
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <i class="fa-sharp fa-solid fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav"></ul>
+          <a href="/login.html">
+            <button
+              id="login-btn"
+              type="button"
+              class="btn btn-outline-success"
+              style="float: right; margin: 5px"
+            >
+              로그인
+            </button></a
+          >
+          <button
+            type="submit"
+            class="btn btn-success"
+            id="logout-btn"
+            style="display: none"
+          >
+            로그아웃
+          </button>
+          <a href="/chat.html">
+            <button
+              id="login-btn"
+              type="button"
+              class="btn btn-outline-success"
+              style="float: right; margin: 5px"
+            >
+              채팅방
+            </button></a
+          >
+        </div>
+      </div>
+    </nav>
+
+    <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-storage.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+      crossorigin="anonymous"
+    ></script>
+
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyCDeergQBPW_1IGzj2OxTJ934ZWiW2ifTc",
+        authDomain: "broccoli-658b6.firebaseapp.com",
+        projectId: "broccoli-658b6",
+        storageBucket: "broccoli-658b6.appspot.com",
+        messagingSenderId: "32034824859",
+        appId: "1:32034824859:web:c3913a8bf3bf8a95df9c3e",
+        measurementId: "G-VHMWQEGP3S",
+      };
+      firebase.initializeApp(firebaseConfig);
+    </script>
+
+    <div class="container mt-3">
+      <input
+        type="text"
+        class="form-control mt-2"
+        id="title"
+        placeholder="title"
+      />
+      <textarea class="form-control mt-2" id="content">content</textarea>
+      <input
+        type="text"
+        class="form-control mt-2"
+        id="price"
+        placeholder="price"
+      />
+      <input
+        class="form-control mt-2"
+        type="file"
+        onchange="this"
+        multiple
+        id="image"
+      />
+
+      <button type="button" class="btn btn-success mt-3" id="send">
+        올리기
+      </button>
+    </div>
+
+    <script>
+      const db = firebase.firestore();
+      const storage = firebase.storage();
+      $("#send").click(function () {
+        var imageFile = document.querySelector("#image").files[0];
+        var storageRef = storage.ref();
+        var saveRoute = storageRef.child("image/" + imageFile.name);
+        var upload = saveRoute.put(imageFile);
+
+        upload.on(
+          "state_changed",
+          // 변화시 동작하는 함수
+          null,
+          //에러시 동작하는 함수
+          (error) => {
+            console.error("실패사유는", error);
+          },
+          // 성공시 동작하는 함수
+          () => {
+            upload.snapshot.ref.getDownloadURL().then((url) => {
+              console.log("업로드된 경로는", url);
+
+              var saveDoc = {
+                title: $("#title").val(),
+                price: Number($("#price").val()), //문자열을 숫자로 변환 Number()
+                content: $("#content").val(),
+                date: new Date().toString(),
+                image: url,
+                uid: JSON.parse(localStorage.getItem("user")).uid,
+                name: JSON.parse(localStorage.getItem("user")).displayName,
+              };
+
+              console.log(saveDoc.uid);
+
+              db.collection("product")
+                .add(saveDoc)
+                .then((result) => {
+                  alert("상품 업로드 완료");
+                  window.location.href = "/index.html"; // 페이지 이동
+                })
+                .catch((err) => {
+                  console.error("업로드 에러 발생 :", err);
+                });
+            });
+          }
+        );
+      });
+      const user = localStorage.getItem("user");
+      if (user) {
+        document.getElementById("login-btn").style.display = "none";
+        document.getElementById("logout-btn").style.display = "block";
+      }
+
+      $("#logout-btn").click(() => {
+        firebase.auth().signOut();
+        localStorage.removeItem("user");
+        alert("로그아웃 되었습니다.");
+        window.location.href = "/";
+      });
+    </script>
+  </body>
+</html>

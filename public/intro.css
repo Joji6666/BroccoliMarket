@@ -1,0 +1,11 @@
+.intro-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 800px;
+}
+
+#head-text {
+  color: rgb(0, 150, 0);
+}

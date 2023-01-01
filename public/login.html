@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x"
+      crossorigin="anonymous"
+    />
+    <link href="main.css" rel="stylesheet" />
+    <title>Document</title>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" style="color: green" href="/">
+          <img src="broccoli.png" alt="Bootstrap" width="30" height="24" />
+          브로콜리마켓</a
+        >
+
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav"></ul>
+
+          <button
+            type="submit"
+            class="btn btn-primary"
+            id="logout-btn"
+            style="display: none"
+          >
+            로그아웃
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-storage.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+      crossorigin="anonymous"
+    ></script>
+
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyCDeergQBPW_1IGzj2OxTJ934ZWiW2ifTc",
+        authDomain: "broccoli-658b6.firebaseapp.com",
+        projectId: "broccoli-658b6",
+        storageBucket: "broccoli-658b6.appspot.com",
+        messagingSenderId: "32034824859",
+        appId: "1:32034824859:web:c3913a8bf3bf8a95df9c3e",
+        measurementId: "G-VHMWQEGP3S",
+      };
+      firebase.initializeApp(firebaseConfig);
+    </script>
+
+    <div class="container mt-3">
+      <div class="register-form">
+        <div class="mb-3">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="name"
+            id="name-new"
+          />
+        </div>
+        <div class="mb-3">
+          <input
+            type="email"
+            class="form-control"
+            placeholder="email"
+            id="email-new"
+          />
+        </div>
+        <div class="mb-3">
+          <input
+            type="password"
+            class="form-control"
+            placeholder="pw"
+            id="pw-new"
+          />
+        </div>
+      </div>
+      <button type="submit" class="btn btn-success mt-3" id="register">
+        가입하기
+      </button>
+    </div>
+    <div class="container mt-3">
+      <div class="login-form">
+        <div class="mb-3">
+          <input
+            type="email"
+            class="form-control"
+            placeholder="email"
+            id="email-login"
+          />
+        </div>
+        <div class="mb-3">
+          <input
+            type="password"
+            class="form-control"
+            placeholder="pw"
+            id="pw-login"
+          />
+        </div>
+      </div>
+      <button type="submit" class="btn btn-success mt-3" id="login">
+        로그인하기
+      </button>
+    </div>
+
+    <script>
+      const db = firebase.firestore();
+      const storage = firebase.storage();
+
+      var storageUser = localStorage.getItem("user");
+      // $("#username").html(JSON.parse(storageUser).displayName);
+
+      firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+          localStorage.setItem("user", JSON.stringify(user));
+        }
+      });
+
+      $("#register").click(() => {
+        var email = $("#email-new").val();
+        var password = $("#pw-new").val();
+        var name = $("#name-new").val();
+
+        firebase
+          .auth()
+          .createUserWithEmailAndPassword(email, password)
+          .then((result) => {
+            console.log(result);
+            var userInfo = {
+              name: name,
+              email: email,
+            };
+
+            db.collection("user")
+              .doc(result.user.uid)
+              .set(userInfo)
+              .then(() => {
+                result.user.updateProfile({ displayName: name });
+                alert("회원가입 되었습니다. 로그인을 해주세요.");
+
+                window.location.href = "/login.html";
+              });
+          });
+      });
+
+      $("#login").click(() => {
+        var email = $("#email-login").val();
+        var password = $("#pw-login").val();
+
+        firebase
+          .auth()
+          .signInWithEmailAndPassword(email, password)
+          .then((result) => {
+            console.log(result.user);
+            alert("로그인 되었습니다.");
+            window.location.href = "/";
+          });
+      });
+
+      $(".login-form").keypress((e) => {
+        if (e.keyCode === 13) {
+          var email = $("#email-login").val();
+          var password = $("#pw-login").val();
+
+          firebase
+            .auth()
+            .signInWithEmailAndPassword(email, password)
+            .then((result) => {
+              console.log(result.user);
+              alert("로그인 되었습니다.");
+              window.location.href = "/";
+            });
+        }
+      });
+
+      $(".register-form").keypress((e) => {
+        if (e.keyCode === 13) {
+          var email = $("#email-new").val();
+          var password = $("#pw-new").val();
+          var name = $("#name-new").val();
+          firebase
+            .auth()
+            .createUserWithEmailAndPassword(email, password)
+            .then((result) => {
+              console.log(result);
+              var userInfo = {
+                name: name,
+                email: email,
+              };
+
+              db.collection("user")
+                .doc(result.user.uid)
+                .set(userInfo)
+                .then(() => {
+                  result.user.updateProfile({ displayName: name });
+                  alert("회원가입 되었습니다. 로그인을 해주세요.");
+
+                  window.location.href = "/login.html";
+                });
+            });
+        }
+      });
+    </script>
+  </body>
+</html>
