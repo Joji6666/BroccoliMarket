@@ -81,7 +81,7 @@
           <input
             type="text"
             class="form-control"
-            placeholder="name"
+            placeholder="이름을 입력해주세요."
             id="name-new"
           />
         </div>
@@ -89,7 +89,7 @@
           <input
             type="email"
             class="form-control"
-            placeholder="email"
+            placeholder="이메일을 입력해주세요."
             id="email-new"
           />
         </div>
@@ -97,7 +97,7 @@
           <input
             type="password"
             class="form-control"
-            placeholder="pw"
+            placeholder="비밀번호를 입력해주세요."
             id="pw-new"
           />
         </div>
@@ -112,7 +112,7 @@
           <input
             type="email"
             class="form-control"
-            placeholder="email"
+            placeholder="이메일을 입력해주세요."
             id="email-login"
           />
         </div>
@@ -120,7 +120,7 @@
           <input
             type="password"
             class="form-control"
-            placeholder="pw"
+            placeholder="비밀번호를 입력해주세요."
             id="pw-login"
           />
         </div>
@@ -157,6 +157,10 @@
               name: name,
               email: email,
             };
+
+            if (password < 6) {
+              alert("비밀번호를 6자 이상 입력해주세요.");
+            }
 
             db.collection("user")
               .doc(result.user.uid)
@@ -224,6 +228,13 @@
 
                   window.location.href = "/login.html";
                 });
+            })
+            .catch((err) => {
+              console.log(password.length);
+              if (password.length < 6) {
+                alert("비밀번호를 6자 이상 입력해주세요.");
+              }
+              alert(err);
             });
         }
       });

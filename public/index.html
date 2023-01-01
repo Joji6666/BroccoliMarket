@@ -110,7 +110,9 @@
           class="thumbnail"
           style="background-image: url(${doc.data().image})"
         ></div>
-        <a href='/detail.html?id=${doc.id}'>
+        <a href='/detail.html?id=${
+          doc.id
+        }' style="text-decoration: none; color: black;">
         <div class="flex-grow-1 p-4">
           <h5 class="title">${doc.data().title}</h5>
           <p class="date">${doc.data().date}</p>

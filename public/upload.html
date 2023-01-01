@@ -97,81 +97,166 @@
       };
       firebase.initializeApp(firebaseConfig);
     </script>
+    <div class="upload-wrap" style="position: relative">
+      <div class="container mt-3">
+        <input
+          type="text"
+          class="form-control mt-2"
+          id="title"
+          placeholder="title"
+        />
+        <textarea class="form-control mt-2" id="content">content</textarea>
+        <input
+          type="text"
+          class="form-control mt-2"
+          id="price"
+          placeholder="price"
+        />
+        <span>이미지 파일 업로드 (최대 3개)</span>
+        <p style="font-size: 13px; color: gray">
+          최소 한 장의 사진을 업로드 해주세요.
+        </p>
+        <input class="form-control mt-2" type="file" multiple id="image" />
+        <input class="form-control mt-2" type="file" multiple id="image1" />
+        <input class="form-control mt-2" type="file" multiple id="image2" />
 
-    <div class="container mt-3">
-      <input
-        type="text"
-        class="form-control mt-2"
-        id="title"
-        placeholder="title"
-      />
-      <textarea class="form-control mt-2" id="content">content</textarea>
-      <input
-        type="text"
-        class="form-control mt-2"
-        id="price"
-        placeholder="price"
-      />
-      <input
-        class="form-control mt-2"
-        type="file"
-        onchange="this"
-        multiple
-        id="image"
-      />
-
-      <button type="button" class="btn btn-success mt-3" id="send">
-        올리기
-      </button>
+        <button type="button" class="btn btn-success mt-3" id="send">
+          올리기
+        </button>
+        <div
+          class="uploading-container"
+          style="display: none; position: absolute"
+        >
+          <div
+            style="
+              padding: 100px;
+              background-color: rgba(78, 78, 78, 0.04);
+              border-radius: 20px;
+              align-items: center;
+              justify-content: center;
+              margin: 0;
+              text-align: center;
+              font-size: 40px;
+              font-weight: 600;
+            "
+          >
+            업로드중입니다. . .
+          </div>
+        </div>
+      </div>
     </div>
 
     <script>
       const db = firebase.firestore();
       const storage = firebase.storage();
-      $("#send").click(function () {
+
+      var url1;
+      var url2;
+
+      $("#send").click(async function () {
         var imageFile = document.querySelector("#image").files[0];
-        var storageRef = storage.ref();
-        var saveRoute = storageRef.child("image/" + imageFile.name);
-        var upload = saveRoute.put(imageFile);
+        if (imageFile == null) {
+          alert("최소 한 장의 사진을 업로드 해주세요.");
+        } else {
+          var imageFile2 = document.querySelector("#image2").files[0];
 
-        upload.on(
-          "state_changed",
-          // 변화시 동작하는 함수
-          null,
-          //에러시 동작하는 함수
-          (error) => {
-            console.error("실패사유는", error);
-          },
-          // 성공시 동작하는 함수
-          () => {
-            upload.snapshot.ref.getDownloadURL().then((url) => {
-              console.log("업로드된 경로는", url);
+          if (imageFile2 == null) {
+            url2 = null;
+            console.log("파일없음2");
+          } else {
+            var storageRef2 = storage.ref();
+            var saveRoute2 = storageRef2.child("image/" + imageFile2.name);
+            var upload2 = saveRoute2.put(imageFile2);
 
-              var saveDoc = {
-                title: $("#title").val(),
-                price: Number($("#price").val()), //문자열을 숫자로 변환 Number()
-                content: $("#content").val(),
-                date: new Date().toString(),
-                image: url,
-                uid: JSON.parse(localStorage.getItem("user")).uid,
-                name: JSON.parse(localStorage.getItem("user")).displayName,
-              };
-
-              console.log(saveDoc.uid);
-
-              db.collection("product")
-                .add(saveDoc)
-                .then((result) => {
-                  alert("상품 업로드 완료");
-                  window.location.href = "/index.html"; // 페이지 이동
-                })
-                .catch((err) => {
-                  console.error("업로드 에러 발생 :", err);
+            upload2.on(
+              "state_changed",
+              null,
+              (error) => {
+                console.error(error);
+              },
+              () => {
+                upload2.snapshot.ref.getDownloadURL().then((url2data) => {
+                  console.log("업로드된 경로는", url2data);
+                  url2 = url2data;
                 });
-            });
+              }
+            );
           }
-        );
+
+          var imageFile1 = document.querySelector("#image1").files[0];
+          if (imageFile1 == null) {
+            url1 = null;
+            console.log("파일없음");
+          } else {
+            var storageRef1 = storage.ref();
+            var saveRoute1 = storageRef1.child("image/" + imageFile1.name);
+            var upload1 = saveRoute1.put(imageFile1);
+
+            upload1.on(
+              "state_changed",
+              null,
+              (error) => {
+                console.error(error);
+              },
+              () => {
+                upload1.snapshot.ref.getDownloadURL().then((url1data) => {
+                  console.log("업로드된 경로는", url1data);
+                  url1 = url1data;
+                });
+              }
+            );
+          }
+
+          var storageRef = storage.ref();
+          var saveRoute = storageRef.child("image/" + imageFile.name);
+          var upload = saveRoute.put(imageFile);
+
+          upload.on(
+            "state_changed",
+            // 변화시 동작하는 함수
+            null,
+            //에러시 동작하는 함수
+            (error) => {
+              console.error("실패사유는", error);
+            },
+            // 성공시 동작하는 함수
+            () => {
+              upload.snapshot.ref.getDownloadURL().then((url) => {
+                console.log("업로드된 경로는", url);
+                document.querySelector(".uploading-container").style.display =
+                  "block";
+                setTimeout(() => {
+                  var saveDoc = {
+                    title: $("#title").val(),
+                    price: Number($("#price").val()), //문자열을 숫자로 변환 Number()
+                    content: $("#content").val(),
+                    date: new Date().toString(),
+                    image: url,
+                    image2: url1,
+                    image3: url2,
+                    uid: JSON.parse(localStorage.getItem("user")).uid,
+                    name: JSON.parse(localStorage.getItem("user")).displayName,
+                  };
+
+                  console.log(saveDoc.uid);
+
+                  db.collection("product")
+                    .add(saveDoc)
+                    .then((result) => {
+                      alert("상품 업로드 완료");
+                      window.location.href = "/index.html"; // 페이지 이동
+                    })
+                    .catch((err) => {
+                      console.error("업로드 에러 발생 :", err);
+                      alert("에러발생 :", err);
+                    });
+                }, 5000);
+              });
+            }
+          );
+        }
       });
+
       const user = localStorage.getItem("user");
       if (user) {
         document.getElementById("login-btn").style.display = "none";

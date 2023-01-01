@@ -99,12 +99,9 @@
     </script>
 
     <div class="container">
-      상세페이지
+      <h1>상세페이지</h1>
+      <div id="pic-warp"></div>
 
-      <div
-        class="detail-pic"
-        style="background-image: url('https://placeimg.com/640/380/tech')"
-      ></div>
       <div>
         <h5 class="whriter">작성자 : 모름</h5>
         <hr />
@@ -235,10 +232,38 @@
           $(".title").html(result.data().title);
           $(".price").html(result.data().price);
           $(".date").html("작성한 날짜 :" + result.data().date);
-          $(".detail-pic").css(
-            "background-image",
-            `url(${result.data().image})`
-          );
+          // $(".detail-pic").css(
+          //   "background-image",
+          //   `url(${result.data().image})`
+          // );
+
+          if (result.data().image != null) {
+            let image = `<div class="detail-image">
+            <img src=${
+              result.data().image
+            }  style="max-width:100%; height:auto;" />
+          </div>`;
+            $("#pic-warp").append(image);
+          }
+
+          if (result.data().image2 != null) {
+            let image2 = ` <div class="detail-image">
+            <img src=${
+              result.data().image2
+            }  style="max-width:100%; height:auto;" />
+          </div>`;
+            $("#pic-warp").append(image2);
+          }
+
+          if (result.data().image3 != null) {
+            let image3 = `  <div class="detail-image">
+            <img src=${
+              result.data().image3
+            }   style="max-width:100%; height:auto;"/>
+          </div>`;
+            $("#pic-warp").append(image3);
+          }
+
           $(".whriter").html("작성자 :" + result.data().name);
         });
 

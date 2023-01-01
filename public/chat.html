@@ -104,6 +104,7 @@
     <div class="container p-4 detail">
       <div class="row">
         <div class="col-3 p-0">
+          <h3>채팅방 목록</h3>
           <ul class="list-group chat-list"></ul>
         </div>
         <div class="col-9 p-0">
@@ -148,13 +149,13 @@
 
                   result.forEach((a) => {
                     var chatWarpTemplate = `
-                    <li><span  id="${a.data().작성자}">${
+                    <li><span  id="${a.data().작성자}" >${
                       a.data().userName
                     }</span></li>
-                    <li><span id="${a.data().작성자}">${
-                      a.data().content
-                    }</span></li>
-                    
+                    <li><span  style="background-color: gray; padding : 6px; border-radius: 5px;"  id="${
+                      a.data().작성자
+                    }content">${a.data().content}</span></li>
+
                   `;
 
                     $(".chat-content").append(chatWarpTemplate);
@@ -162,6 +163,14 @@
                       console.log("data", data);
                       data.style.float = "right";
                     });
+                    document
+                      .querySelectorAll(`#${myUid}content`)
+                      .forEach((data) => {
+                        console.log("data", data);
+                        data.style.float = "right";
+                        data.style.backgroundColor = " rgba(0, 255, 0, 0.5)";
+                        data.style.borderRadius = "5px";
+                      });
 
                     // if (myUid == messagesUid) {
                     //   //   document.getElementById("user-name").style.float =
@@ -190,6 +199,26 @@
 
         db.collection("chatroom").doc(chatId).collection("messages").add(data);
       });
+
+      $(".input-group").keypress((e) => {
+        if (e.keyCode === 13) {
+          var data = {
+            content: $("#chat-input").val(),
+            date: new Date(),
+            작성자: myUid,
+            userName: userName,
+          };
+
+          db.collection("chatroom")
+            .doc(chatId)
+            .collection("messages")
+            .add(data)
+            .then(() => {
+              $("#chat-input").val("");
+            });
+        }
+      });
+
       const user = localStorage.getItem("user");
       if (user) {
         document.getElementById("login-btn").style.display = "none";
