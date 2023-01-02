@@ -138,6 +138,10 @@
       // $("#username").html(JSON.parse(storageUser).displayName);
 
       firebase.auth().onAuthStateChanged((user) => {
+        console.log(user);
+      });
+
+      firebase.auth().onAuthStateChanged((user) => {
         if (user) {
           localStorage.setItem("user", JSON.stringify(user));
         }

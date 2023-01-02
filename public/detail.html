@@ -155,6 +155,7 @@
       var product;
       var userUid = JSON.parse(localStorage.getItem("user")).uid;
       const productId = query.get("id");
+      let localStorageName = db.collection("user").doc(myUid);
 
       db.collection("product")
         .doc(query.get("id"))
@@ -265,8 +266,13 @@
           </div>`;
             $("#pic-warp").append(image3);
           }
-
-          $(".whriter").html("작성자 :" + result.data().name);
+          db.collection("user")
+            .doc(userUid)
+            .get()
+            .then((result) => {
+              $(".whriter").html("작성자 :" + result.data().name);
+            });
+          // $(".whriter").html("작성자 :" + result.data().name);
         });
 
       $("#edit").click(() => {
@@ -276,6 +282,9 @@
       $("#chat").click(() => {
         var myUid = JSON.parse(localStorage.getItem("user")).uid;
         var myName = JSON.parse(localStorage.getItem("user")).displayName;
+
+        localStorageName.get().then((result) => {});
+
         var chatUser = {
           참여자: [myUid, sellerUid],
           상품명: product,
@@ -302,7 +311,7 @@
         firebase.auth().signOut();
         localStorage.removeItem("user");
         alert("로그아웃 되었습니다.");
-        window.location.href = "/";
+        window.location.href = "/login.html";
       });
 
       $("#backChatRoom").click(() => {

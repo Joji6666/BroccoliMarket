@@ -156,6 +156,14 @@
       var url1;
       var url2;
 
+      // let loginUid;
+      // firebase.auth().onAuthStateChanged((user) => {
+      //   console.log(user.uid);
+      //   loginUid = user.uid;
+      // });
+
+      // console.log(loginUid);
+
       $("#send").click(async function () {
         var imageFile = document.querySelector("#image").files[0];
         if (imageFile == null) {
@@ -270,7 +278,7 @@
         firebase.auth().signOut();
         localStorage.removeItem("user");
         alert("로그아웃 되었습니다.");
-        window.location.href = "/";
+        window.location.href = "/login.html";
       });
     </script>
   </body>

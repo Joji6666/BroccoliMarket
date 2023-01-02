@@ -124,6 +124,9 @@
       var myUid = JSON.parse(localStorage.getItem("user")).uid;
       var userName = JSON.parse(localStorage.getItem("user")).displayName;
 
+      let localStorageName = db.collection("user").doc(myUid);
+      console.log(localStorageName);
+
       // where = query 할 때 이용하는 함수
       db.collection("chatroom")
         .where("참여자", "array-contains", myUid)
@@ -132,7 +135,9 @@
           result.forEach((a) => {
             var chatRoomTemplate = ` <li class="list-group-item">
               <h6>${a.data().상품명}</h6>
-              <h6 class="text-small">${a.id}</h6>
+              <span>참여자 :${a.data().참여자이름}</span>
+              <h6 class="text-small" style="visibility: hidden;">${a.id}</h6>
+            
             </li>`;
             $(".chat-list").append(chatRoomTemplate);
 
@@ -190,32 +195,46 @@
       var messagesUid;
 
       $("#send").click(() => {
-        var data = {
-          content: $("#chat-input").val(),
-          date: new Date(),
-          작성자: myUid,
-          userName: userName,
-        };
-
-        db.collection("chatroom").doc(chatId).collection("messages").add(data);
-      });
-
-      $(".input-group").keypress((e) => {
-        if (e.keyCode === 13) {
+        localStorageName.get().then((result) => {
           var data = {
             content: $("#chat-input").val(),
             date: new Date(),
             작성자: myUid,
-            userName: userName,
+            userName: result.data().name,
           };
 
           db.collection("chatroom")
             .doc(chatId)
             .collection("messages")
-            .add(data)
-            .then(() => {
-              $("#chat-input").val("");
-            });
+            .add(data);
+        });
+      });
+
+      $(".input-group").keypress((e) => {
+        if (e.keyCode === 13) {
+          localStorageName.get().then((result) => {
+            var data = {
+              content: $("#chat-input").val(),
+              date: new Date(),
+              작성자: myUid,
+              userName: result.data().name,
+            };
+
+            db.collection("chatroom")
+              .doc(chatId)
+              .collection("messages")
+              .add(data)
+              .then(() => {
+                $("#chat-input").val("");
+              });
+          });
+
+          //   var data = {
+          //     content: $("#chat-input").val(),
+          //     date: new Date(),
+          //     작성자: myUid,
+          //     userName: userName,
+          //   };
         }
       });
 
@@ -229,7 +248,7 @@
         firebase.auth().signOut();
         localStorage.removeItem("user");
         alert("로그아웃 되었습니다.");
-        window.location.href = "/";
+        window.location.href = "/login.html";
       });
     </script>
   </body>
