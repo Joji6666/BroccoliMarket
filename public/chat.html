@@ -121,9 +121,9 @@
     <script>
       const db = firebase.firestore();
       const storage = firebase.storage();
-      var myUid = JSON.parse(localStorage.getItem("user")).uid;
-      var userName = JSON.parse(localStorage.getItem("user")).displayName;
 
+      var userName = JSON.parse(localStorage.getItem("user")).displayName;
+      var myUid = JSON.parse(localStorage.getItem("user")).uid;
       let localStorageName = db.collection("user").doc(myUid);
       console.log(localStorageName);
 

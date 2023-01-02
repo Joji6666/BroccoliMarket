@@ -237,30 +237,35 @@
                 document.querySelector(".uploading-container").style.display =
                   "block";
                 setTimeout(() => {
-                  var saveDoc = {
-                    title: $("#title").val(),
-                    price: Number($("#price").val()), //문자열을 숫자로 변환 Number()
-                    content: $("#content").val(),
-                    date: new Date().toString(),
-                    image: url,
-                    image2: url1,
-                    image3: url2,
-                    uid: JSON.parse(localStorage.getItem("user")).uid,
-                    name: JSON.parse(localStorage.getItem("user")).displayName,
-                  };
+                  var myUid = JSON.parse(localStorage.getItem("user")).uid;
+                  let localStorageName = db.collection("user").doc(myUid);
 
-                  console.log(saveDoc.uid);
+                  localStorageName.get().then((result) => {
+                    var saveDoc = {
+                      title: $("#title").val(),
+                      price: Number($("#price").val()), //문자열을 숫자로 변환 Number()
+                      content: $("#content").val(),
+                      date: new Date().toString(),
+                      image: url,
+                      image2: url1,
+                      image3: url2,
+                      uid: JSON.parse(localStorage.getItem("user")).uid,
+                      name: result.data().name,
+                    };
 
-                  db.collection("product")
-                    .add(saveDoc)
-                    .then((result) => {
-                      alert("상품 업로드 완료");
-                      window.location.href = "/index.html"; // 페이지 이동
-                    })
-                    .catch((err) => {
-                      console.error("업로드 에러 발생 :", err);
-                      alert("에러발생 :", err);
-                    });
+                    console.log(saveDoc.uid);
+
+                    db.collection("product")
+                      .add(saveDoc)
+                      .then((result) => {
+                        alert("상품 업로드 완료");
+                        window.location.href = "/index.html"; // 페이지 이동
+                      })
+                      .catch((err) => {
+                        console.error("업로드 에러 발생 :", err);
+                        alert("에러발생 :", err);
+                      });
+                  });
                 }, 5000);
               });
             }

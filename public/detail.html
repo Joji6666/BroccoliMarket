@@ -155,7 +155,7 @@
       var product;
       var userUid = JSON.parse(localStorage.getItem("user")).uid;
       const productId = query.get("id");
-      let localStorageName = db.collection("user").doc(myUid);
+      let localStorageName = db.collection("user").doc(userUid);
 
       db.collection("product")
         .doc(query.get("id"))
@@ -266,13 +266,8 @@
           </div>`;
             $("#pic-warp").append(image3);
           }
-          db.collection("user")
-            .doc(userUid)
-            .get()
-            .then((result) => {
-              $(".whriter").html("작성자 :" + result.data().name);
-            });
-          // $(".whriter").html("작성자 :" + result.data().name);
+
+          $(".whriter").html("작성자 :" + result.data().name);
         });
 
       $("#edit").click(() => {
@@ -283,22 +278,22 @@
         var myUid = JSON.parse(localStorage.getItem("user")).uid;
         var myName = JSON.parse(localStorage.getItem("user")).displayName;
 
-        localStorageName.get().then((result) => {});
+        localStorageName.get().then((result) => {
+          var chatUser = {
+            참여자: [myUid, sellerUid],
+            상품명: product,
+            date: new Date(),
+            참여자이름: [result.data().name, sellerName],
+            productId: query.get("id"),
+            sellerUid: sellerUid,
+          };
 
-        var chatUser = {
-          참여자: [myUid, sellerUid],
-          상품명: product,
-          date: new Date(),
-          참여자이름: [myName, sellerName],
-          productId: query.get("id"),
-          sellerUid: sellerUid,
-        };
-
-        db.collection("chatroom")
-          .add(chatUser)
-          .then(() => {
-            window.location.href = "/chat.html";
-          });
+          db.collection("chatroom")
+            .add(chatUser)
+            .then(() => {
+              window.location.href = "/chat.html";
+            });
+        });
       });
 
       const user = localStorage.getItem("user");
