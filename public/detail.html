@@ -103,8 +103,9 @@
       <div id="pic-warp"></div>
 
       <div>
-        <h5 class="whriter">작성자 : 모름</h5>
+        <p class="content">content</p>
         <hr />
+        <h5 class="whriter">작성자 : 모름</h5>
         <h5 class="title"></h5>
         <p class="date">date</p>
         <p class="price">price</p>
@@ -229,9 +230,10 @@
             document.getElementById("backChatRoom").style.display = "none";
           }
 
-          $(".title").html(result.data().title);
-          $(".price").html(result.data().price);
+          $(".title").html("상품명 :" + result.data().title);
+          $(".price").html("가격 :" + result.data().price);
           $(".date").html("작성한 날짜 :" + result.data().date);
+          $(".content").html("상품 설명 :" + result.data().content);
           // $(".detail-pic").css(
           //   "background-image",
           //   `url(${result.data().image})`

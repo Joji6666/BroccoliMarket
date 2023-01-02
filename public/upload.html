@@ -99,6 +99,29 @@
     </script>
     <div class="upload-wrap" style="position: relative">
       <div class="container mt-3">
+        <div class="uploading-container" style="display: none">
+          <div
+            class="uploading-box"
+            style="
+              padding: 100px;
+              background-color: rgba(78, 78, 78, 0.9);
+              border-radius: 20px;
+
+              font-size: 40px;
+              font-weight: 600;
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              margin: -90px 0 0 -240px;
+              align-items: center;
+              justify-content: center;
+
+              text-align: center;
+            "
+          >
+            업로드중입니다. . .
+          </div>
+        </div>
         <input
           type="text"
           class="form-control mt-2"
@@ -123,26 +146,6 @@
         <button type="button" class="btn btn-success mt-3" id="send">
           올리기
         </button>
-        <div
-          class="uploading-container"
-          style="display: none; position: absolute"
-        >
-          <div
-            style="
-              padding: 100px;
-              background-color: rgba(78, 78, 78, 0.04);
-              border-radius: 20px;
-              align-items: center;
-              justify-content: center;
-              margin: 0;
-              text-align: center;
-              font-size: 40px;
-              font-weight: 600;
-            "
-          >
-            업로드중입니다. . .
-          </div>
-        </div>
       </div>
     </div>
 
