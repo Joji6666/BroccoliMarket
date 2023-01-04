@@ -206,7 +206,10 @@
           db.collection("chatroom")
             .doc(chatId)
             .collection("messages")
-            .add(data);
+            .add(data)
+            .then(() => {
+              $("#chat-input").val("");
+            });
         });
       });
 

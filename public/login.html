@@ -137,9 +137,7 @@
       var storageUser = localStorage.getItem("user");
       // $("#username").html(JSON.parse(storageUser).displayName);
 
-      firebase.auth().onAuthStateChanged((user) => {
-        console.log(user);
-      });
+  
 
       firebase.auth().onAuthStateChanged((user) => {
         if (user) {
