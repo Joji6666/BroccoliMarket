@@ -129,7 +129,7 @@
 
       // where = query 할 때 이용하는 함수
       db.collection("chatroom")
-        .where("참여자", "array-contains", myUid)
+        .where("참여자", "array-contains", myUid) // chatroom 컬렉션 안에있는 document들에 있는 객체중에 참여자라는 키값에 myUid가 들어가 있는 항목들을 불러온다,
         .get()
         .then((result) => {
           result.forEach((a) => {
@@ -139,17 +139,18 @@
               <h6 class="text-small" style="visibility: hidden;">${a.id}</h6>
             
             </li>`;
-            $(".chat-list").append(chatRoomTemplate);
+            $(".chat-list").append(chatRoomTemplate); // chat-list class항목에 변수 삽입
 
             $(".list-group-item").click(function (e) {
-              chatId = $(this).children(".text-small").text();
+              chatId = $(this).children(".text-small").text(); // test-samll class에 있는 id값을 받아온다. id값은 위에서 받아옴
               e.stopImmediatePropagation(); // 이벤트 버블링 방지
 
               db.collection("chatroom")
-                .doc(chatId)
+                .doc(chatId) // text-small 에서 받아온 id 값
                 .collection("messages")
-                .orderBy("date")
+                .orderBy("date") // 시간순으로 정렬
                 .onSnapshot((result) => {
+                  //onSnapshot은 실시간으로 데이터를 반영할 때 사용된다,
                   $(".chat-content").html("");
 
                   result.forEach((a) => {
@@ -164,6 +165,7 @@
                   `;
 
                     $(".chat-content").append(chatWarpTemplate);
+                    //내 아이디의 내용을 오른쪽으로 정렬해주는 코드
                     document.querySelectorAll("#" + myUid).forEach((data) => {
                       console.log("data", data);
                       data.style.float = "right";
@@ -176,14 +178,6 @@
                         data.style.backgroundColor = " rgba(0, 255, 0, 0.5)";
                         data.style.borderRadius = "5px";
                       });
-
-                    // if (myUid == messagesUid) {
-                    //   //   document.getElementById("user-name").style.float =
-                    //   //     "right";
-                    //   //   document.getElementById("chat-box").style.float = "right";
-                    //   //   document;
-
-                    // }
 
                     console.log(messagesUid);
                   });
@@ -202,7 +196,7 @@
             작성자: myUid,
             userName: result.data().name,
           };
-
+          //messages 컬렉션에 채팅 내용 데이터를 추가하는 코드
           db.collection("chatroom")
             .doc(chatId)
             .collection("messages")
@@ -231,13 +225,6 @@
                 $("#chat-input").val("");
               });
           });
-
-          //   var data = {
-          //     content: $("#chat-input").val(),
-          //     date: new Date(),
-          //     작성자: myUid,
-          //     userName: userName,
-          //   };
         }
       });
 

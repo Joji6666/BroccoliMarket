@@ -239,7 +239,7 @@
                 setTimeout(() => {
                   var myUid = JSON.parse(localStorage.getItem("user")).uid;
                   let localStorageName = db.collection("user").doc(myUid);
-
+                  //업로드 코드
                   localStorageName.get().then((result) => {
                     var saveDoc = {
                       title: $("#title").val(),

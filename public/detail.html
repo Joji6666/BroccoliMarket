@@ -148,7 +148,7 @@
       const db = firebase.firestore();
       const storage = firebase.storage();
 
-      var query = new URLSearchParams(window.location.search);
+      var query = new URLSearchParams(window.location.search); //url에서 id값을 받아오는 코드
 
       var sellerName;
       var sellerUid;
@@ -222,7 +222,6 @@
 
           if (userUid == sellerUid) {
             document.getElementById("chat").style.display = "none";
-            db;
           }
 
           if (userUid != sellerUid) {

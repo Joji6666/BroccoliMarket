@@ -105,6 +105,8 @@
       });
 
       const db = firebase.firestore();
+
+      //db에서 product란 컬렉션안의 있는 데이터를 가져오는 코드
       db.collection("product")
         .get()
         .then((result) => {
