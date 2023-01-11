@@ -166,107 +166,112 @@
           console.log(result.data());
         });
       $("#edit").click(async function () {
-        var imageFile = document.querySelector("#image").files[0];
-        if (imageFile == null) {
-          alert("최소 한 장의 사진을 업로드 해주세요.");
-        } else {
-          var imageFile2 = document.querySelector("#image2").files[0];
-
-          if (imageFile2 == null) {
-            url2 = null;
-            console.log("파일없음2");
+        let editConfirm = confirm("수정하시겠습니까?");
+        if (editConfirm == true) {
+          var imageFile = document.querySelector("#image").files[0];
+          if (imageFile == null) {
+            alert("최소 한 장의 사진을 업로드 해주세요.");
           } else {
-            var storageRef2 = storage.ref();
-            var saveRoute2 = storageRef2.child("image/" + imageFile2.name);
-            var upload2 = saveRoute2.put(imageFile2);
+            var imageFile2 = document.querySelector("#image2").files[0];
 
-            upload2.on(
-              "state_changed",
-              null,
-              (error) => {
-                console.error(error);
-              },
-              () => {
-                upload2.snapshot.ref.getDownloadURL().then((url2data) => {
-                  console.log("업로드된 경로는", url2data);
-                  url2 = url2data;
-                });
-              }
-            );
-          }
+            if (imageFile2 == null) {
+              url2 = null;
+              console.log("파일없음2");
+            } else {
+              var storageRef2 = storage.ref();
+              var saveRoute2 = storageRef2.child("image/" + imageFile2.name);
+              var upload2 = saveRoute2.put(imageFile2);
 
-          var imageFile1 = document.querySelector("#image1").files[0];
-          if (imageFile1 == null) {
-            url1 = null;
-            console.log("파일없음");
-          } else {
-            var storageRef1 = storage.ref();
-            var saveRoute1 = storageRef1.child("image/" + imageFile1.name);
-            var upload1 = saveRoute1.put(imageFile1);
-
-            upload1.on(
-              "state_changed",
-              null,
-              (error) => {
-                console.error(error);
-              },
-              () => {
-                upload1.snapshot.ref.getDownloadURL().then((url1data) => {
-                  console.log("업로드된 경로는", url1data);
-                  url1 = url1data;
-                });
-              }
-            );
-          }
-
-          var storageRef = storage.ref();
-          var saveRoute = storageRef.child("image/" + imageFile.name);
-          var upload = saveRoute.put(imageFile);
-
-          upload.on(
-            "state_changed",
-            // 변화시 동작하는 함수
-            null,
-            //에러시 동작하는 함수
-            (error) => {
-              console.error("실패사유는", error);
-            },
-            // 성공시 동작하는 함수
-            () => {
-              upload.snapshot.ref.getDownloadURL().then((url) => {
-                console.log("업로드된 경로는", url);
-                document.querySelector(".uploading-container").style.display =
-                  "block";
-                setTimeout(() => {
-                  var myUid = JSON.parse(localStorage.getItem("user")).uid;
-                  let localStorageName = db.collection("user").doc(myUid);
-
-                  localStorageName.get().then((result) => {
-                    var changed = {
-                      title: $("#title").val(),
-                      price: Number($("#price").val()), //문자열을 숫자로 변환 Number()
-                      content: $("#content").val(),
-                      date: new Date().toString(),
-                      image: url,
-                      image2: url1,
-                      image3: url2,
-                      uid: JSON.parse(localStorage.getItem("user")).uid,
-                      name: result.data().name,
-                    };
-
-                    db.collection("product")
-                      .doc(query.get("id"))
-                      .update(changed)
-                      .then(() => {
-                        alert("수정됐습니다.");
-                        window.location.href =
-                          "/detail.html?id=" + query.get("id");
-                      });
+              upload2.on(
+                "state_changed",
+                null,
+                (error) => {
+                  console.error(error);
+                },
+                () => {
+                  upload2.snapshot.ref.getDownloadURL().then((url2data) => {
+                    console.log("업로드된 경로는", url2data);
+                    url2 = url2data;
                   });
-                }, 5000);
-              });
+                }
+              );
             }
-          );
+
+            var imageFile1 = document.querySelector("#image1").files[0];
+            if (imageFile1 == null) {
+              url1 = null;
+              console.log("파일없음");
+            } else {
+              var storageRef1 = storage.ref();
+              var saveRoute1 = storageRef1.child("image/" + imageFile1.name);
+              var upload1 = saveRoute1.put(imageFile1);
+
+              upload1.on(
+                "state_changed",
+                null,
+                (error) => {
+                  console.error(error);
+                },
+                () => {
+                  upload1.snapshot.ref.getDownloadURL().then((url1data) => {
+                    console.log("업로드된 경로는", url1data);
+                    url1 = url1data;
+                  });
+                }
+              );
+            }
+
+            var storageRef = storage.ref();
+            var saveRoute = storageRef.child("image/" + imageFile.name);
+            var upload = saveRoute.put(imageFile);
+
+            upload.on(
+              "state_changed",
+              // 변화시 동작하는 함수
+              null,
+              //에러시 동작하는 함수
+              (error) => {
+                console.error("실패사유는", error);
+              },
+              // 성공시 동작하는 함수
+              () => {
+                upload.snapshot.ref.getDownloadURL().then((url) => {
+                  console.log("업로드된 경로는", url);
+                  document.querySelector(".uploading-container").style.display =
+                    "block";
+                  setTimeout(() => {
+                    var myUid = JSON.parse(localStorage.getItem("user")).uid;
+                    let localStorageName = db.collection("user").doc(myUid);
+
+                    localStorageName.get().then((result) => {
+                      var changed = {
+                        title: $("#title").val(),
+                        price: Number($("#price").val()), //문자열을 숫자로 변환 Number()
+                        content: $("#content").val(),
+                        date: new Date().toString(),
+                        image: url,
+                        image2: url1,
+                        image3: url2,
+                        uid: JSON.parse(localStorage.getItem("user")).uid,
+                        name: result.data().name,
+                      };
+
+                      db.collection("product")
+                        .doc(query.get("id"))
+                        .update(changed)
+                        .then(() => {
+                          alert("수정됐습니다.");
+                          window.location.href =
+                            "/detail.html?id=" + query.get("id");
+                        });
+                    });
+                  }, 5000);
+                });
+              }
+            );
+          }
+        } else {
+          alert("수정이 취소됐습니다.");
         }
       });
 
