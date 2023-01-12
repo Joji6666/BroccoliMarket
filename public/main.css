@@ -62,3 +62,59 @@
   border-radius: 5px;
   float: left;
 }
+
+.uploading-container {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
+.uploading-container h1 {
+  font-size: 3rem;
+  position: relative;
+  color: green;
+}
+
+.waviy::after {
+  content: "";
+  width: 100%;
+  height: 3px;
+  background: yellowgreen;
+  position: absolute;
+  left: 0;
+  bottom: -10px;
+  animation: uploadingLine 1s ease infinite;
+}
+
+@keyframes uploadingLine {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.waviy {
+  position: relative;
+}
+.waviy span {
+  position: relative;
+  display: inline-block;
+  font-size: 40px;
+  font-weight: 900;
+  color: green;
+  text-transform: uppercase;
+  animation: flip 1s infinite;
+  animation-delay: calc(0.1s * var(--i));
+}
+@keyframes flip {
+  0%,
+  80% {
+    transform: rotateY(360deg);
+  }
+}

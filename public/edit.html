@@ -100,26 +100,14 @@
 
     <div class="container mt-3">
       <div class="uploading-container" style="display: none">
-        <div
-          class="uploading-box"
-          style="
-            padding: 120px;
-            background-color: rgba(78, 78, 78, 0.9);
-            border-radius: 20px;
-
-            font-size: 40px;
-            font-weight: 600;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            margin: -90px 0 0 -240px;
-            align-items: center;
-            justify-content: center;
-
-            text-align: center;
-          "
-        >
-          수정중입니다. . .
+        <div class="waviy">
+          <span style="--i: 1">수</span>
+          <span style="--i: 2">정</span>
+          <span style="--i: 3">중</span>
+          <span style="--i: 4">입</span>
+          <span style="--i: 5">니</span>
+          <span style="--i: 6">다</span>
+          <span style="--i: 7">.</span>
         </div>
       </div>
       <input
@@ -238,7 +226,7 @@
                 upload.snapshot.ref.getDownloadURL().then((url) => {
                   console.log("업로드된 경로는", url);
                   document.querySelector(".uploading-container").style.display =
-                    "block";
+                    "";
                   setTimeout(() => {
                     var myUid = JSON.parse(localStorage.getItem("user")).uid;
                     let localStorageName = db.collection("user").doc(myUid);
